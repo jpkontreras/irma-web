@@ -1,56 +1,70 @@
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
+import FormMessageError from '@/components/blocks/FormMessage';
 import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
 export default function ConfirmPassword() {
-    const { data, setData, post, processing, errors, reset } = useForm({
-        password: '',
+  const { data, setData, post, processing, errors, reset } = useForm({
+    password: '',
+  });
+
+  const submit: FormEventHandler = (e) => {
+    e.preventDefault();
+    post(route('password.confirm'), {
+      onFinish: () => reset('password'),
     });
+  };
 
-    const submit: FormEventHandler = (e) => {
-        e.preventDefault();
+  return (
+    <GuestLayout>
+      <Head title="Confirm Password - Unbound" />
 
-        post(route('password.confirm'), {
-            onFinish: () => reset('password'),
-        });
-    };
+      <div className="flex min-h-full flex-1 flex-col items-center justify-center px-6">
+        <div className="w-full max-w-md">
+          <div className="flex flex-col items-center">
+            <img
+              src="/images/face.svg"
+              alt="Unbound"
+              className="mb-8 size-16 rounded-xl"
+            />
+            <h2 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+              Confirm password
+            </h2>
+            <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
+              This is a secure area. Please confirm your password before
+              continuing.
+            </p>
+          </div>
 
-    return (
-        <GuestLayout>
-            <Head title="Confirm Password" />
-
-            <div className="mb-4 text-sm text-gray-600 dark:text-gray-400">
-                This is a secure area of the application. Please confirm your
-                password before continuing.
+          <form onSubmit={submit} className="mt-8 space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                type="password"
+                name="password"
+                value={data.password}
+                className="mt-1 block w-full"
+                autoFocus
+                onChange={(e) => setData('password', e.target.value)}
+              />
+              {errors.password && (
+                <FormMessageError>{errors.password}</FormMessageError>
+              )}
             </div>
 
-            <form onSubmit={submit}>
-                <div className="mt-4">
-                    <InputLabel htmlFor="password" value="Password" />
-
-                    <TextInput
-                        id="password"
-                        type="password"
-                        name="password"
-                        value={data.password}
-                        className="mt-1 block w-full"
-                        isFocused={true}
-                        onChange={(e) => setData('password', e.target.value)}
-                    />
-
-                    <InputError message={errors.password} className="mt-2" />
-                </div>
-
-                <div className="mt-4 flex items-center justify-end">
-                    <PrimaryButton className="ms-4" disabled={processing}>
-                        Confirm
-                    </PrimaryButton>
-                </div>
-            </form>
-        </GuestLayout>
-    );
+            <PrimaryButton
+              className="w-full justify-center"
+              disabled={processing}
+            >
+              Confirm
+            </PrimaryButton>
+          </form>
+        </div>
+      </div>
+    </GuestLayout>
+  );
 }
