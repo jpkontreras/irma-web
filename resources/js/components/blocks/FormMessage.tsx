@@ -6,8 +6,8 @@ const FormMessageError = ({
   message,
   ...props
 }: PropsWithChildren<{
-  className: string;
-  message: string;
+  className?: string;
+  message?: string;
 }>) => {
   return (
     <p
