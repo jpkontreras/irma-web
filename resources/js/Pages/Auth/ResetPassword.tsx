@@ -1,5 +1,5 @@
 import FormMessageError from '@/components/blocks/FormMessage';
-import PrimaryButton from '@/Components/PrimaryButton';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import GuestLayout from '@/Layouts/GuestLayout';
@@ -101,12 +101,9 @@ export default function ResetPassword({
               )}
             </div>
 
-            <PrimaryButton
-              className="w-full justify-center"
-              disabled={processing}
-            >
+            <Button className="w-full justify-center" disabled={processing}>
               Reset Password
-            </PrimaryButton>
+            </Button>
           </form>
         </div>
       </div>

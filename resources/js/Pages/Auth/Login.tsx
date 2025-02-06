@@ -1,9 +1,7 @@
-// import Checkbox from '@/Components/Checkbox';
-
+import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 
 import FormMessageError from '@/components/blocks/FormMessage';
-import PrimaryButton from '@/Components/PrimaryButton';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import GuestLayout from '@/Layouts/GuestLayout';
@@ -117,12 +115,9 @@ export default function Login({
               </div>
 
               <div className="space-y-6">
-                <PrimaryButton
-                  className="w-full justify-center"
-                  disabled={processing}
-                >
-                  Sign in
-                </PrimaryButton>
+                <Button className="w-full justify-center" disabled={processing}>
+                  Log in
+                </Button>
 
                 <p className="text-center text-sm text-gray-600 dark:text-gray-400">
                   <span className="mr-1">New to our platform?</span>

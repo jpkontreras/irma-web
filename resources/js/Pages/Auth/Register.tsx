@@ -1,5 +1,5 @@
 import FormMessageError from '@/components/blocks/FormMessage';
-import PrimaryButton from '@/Components/PrimaryButton';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import GuestLayout from '@/Layouts/GuestLayout';
@@ -112,12 +112,9 @@ export default function Register() {
               </div>
 
               <div className="space-y-6">
-                <PrimaryButton
-                  className="w-full justify-center"
-                  disabled={processing}
-                >
-                  Create Account
-                </PrimaryButton>
+                <Button className="w-full justify-center" disabled={processing}>
+                  Register
+                </Button>
 
                 <p className="text-center text-sm text-gray-600 dark:text-gray-400">
                   <span className="mr-1">Already have an account?</span>

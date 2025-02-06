@@ -1,7 +1,7 @@
 import ApplicationLogo from '@/components/blocks/ApplicationLogo';
-import ResponsiveNavLink from '@/components/blocks/ResponsiveNavLink';
-import Dropdown from '@/Components/Dropdown';
-import NavLink from '@/Components/NavLink';
+import ResponsiveNavLink, {
+  NavLink,
+} from '@/components/blocks/ResponsiveNavLink';
 import { Link, usePage } from '@inertiajs/react';
 import { PropsWithChildren, ReactNode, useState } from 'react';
 
@@ -38,7 +38,7 @@ export default function Authenticated({
 
             <div className="hidden sm:ms-6 sm:flex sm:items-center">
               <div className="relative ms-3">
-                <Dropdown>
+                {/* <Dropdown>
                   <Dropdown.Trigger>
                     <span className="inline-flex rounded-md">
                       <button
@@ -75,7 +75,7 @@ export default function Authenticated({
                       Log Out
                     </Dropdown.Link>
                   </Dropdown.Content>
-                </Dropdown>
+                </Dropdown> */}
               </div>
             </div>
 

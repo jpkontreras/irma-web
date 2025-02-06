@@ -1,5 +1,5 @@
 import FormMessageError from '@/components/blocks/FormMessage';
-import PrimaryButton from '@/Components/PrimaryButton';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import GuestLayout from '@/Layouts/GuestLayout';
@@ -62,12 +62,9 @@ export default function ForgotPassword({ status }: { status?: string }) {
             </div>
 
             <div className="space-y-6">
-              <PrimaryButton
-                className="w-full justify-center"
-                disabled={processing}
-              >
-                Send Reset Link
-              </PrimaryButton>
+              <Button className="w-full justify-center" disabled={processing}>
+                Email Password Reset Link
+              </Button>
 
               <p className="text-center text-sm text-gray-600 dark:text-gray-400">
                 <Link

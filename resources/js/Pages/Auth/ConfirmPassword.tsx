@@ -1,5 +1,5 @@
 import FormMessageError from '@/components/blocks/FormMessage';
-import PrimaryButton from '@/Components/PrimaryButton';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import GuestLayout from '@/Layouts/GuestLayout';
@@ -56,12 +56,9 @@ export default function ConfirmPassword() {
               )}
             </div>
 
-            <PrimaryButton
-              className="w-full justify-center"
-              disabled={processing}
-            >
+            <Button className="w-full justify-center" disabled={processing}>
               Confirm
-            </PrimaryButton>
+            </Button>
           </form>
         </div>
       </div>
