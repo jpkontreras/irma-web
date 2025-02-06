@@ -27,11 +27,15 @@ return new class extends Migration
       $table->boolean('is_active')->default(true);
       $table->string('timezone')->default('UTC');
 
+      // Owner relationship
+      $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+
       $table->timestamps();
       $table->softDeletes();
 
       // Indexes
       $table->index('is_active');
+      $table->index('user_id');
     });
   }
 
