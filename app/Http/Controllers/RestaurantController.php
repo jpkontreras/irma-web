@@ -104,4 +104,11 @@ class RestaurantController extends Controller
       ->route('restaurants.index')
       ->with('success', 'Restaurant deleted successfully.');
   }
+
+  public function show(Restaurant $restaurant)
+  {
+    return inertia('Restaurants/Show', [
+      'restaurant' => $restaurant
+    ]);
+  }
 }

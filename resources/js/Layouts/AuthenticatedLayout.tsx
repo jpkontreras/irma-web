@@ -1,3 +1,5 @@
+import Breadcrumbs from '@/Components/Breadcrumbs';
+import PageHeader from '@/Components/PageHeader';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,13 +20,59 @@ import {
 } from '@/components/ui/sidebar';
 import { Link, usePage } from '@inertiajs/react';
 import { ChevronUp, LayoutDashboard, LogOut, User2 } from 'lucide-react';
-import { PropsWithChildren, ReactNode } from 'react';
+import { PropsWithChildren, ReactNode, useMemo } from 'react';
 
 export default function Authenticated({
   header,
+  actions,
+  title,
+  subtitle,
   children,
-}: PropsWithChildren<{ header?: ReactNode }>) {
+}: PropsWithChildren<{
+  header?: ReactNode;
+  actions?: ReactNode;
+  title?: string;
+  subtitle?: string;
+}>) {
+  const { breadcrumbs = [] } = usePage().props;
   const user = usePage().props.auth.user;
+
+  const defaultHeader = useMemo(() => {
+    console.log({ x: route() });
+
+    const currentRoute = route().current();
+    const lastBreadcrumb = breadcrumbs[breadcrumbs.length - 1];
+    const params = route().params;
+
+    // Determine back URL based on current route
+    let backUrl;
+    let showBackButton = false;
+
+    switch (currentRoute) {
+      case 'restaurants.create':
+        backUrl = route('restaurants.index');
+        showBackButton = true;
+        break;
+      case 'restaurants.show':
+        backUrl = route('restaurants.index');
+        showBackButton = true;
+        break;
+      case 'restaurants.edit':
+        backUrl = route('restaurants.show', params.restaurant);
+        showBackButton = true;
+        break;
+    }
+
+    return (
+      <PageHeader
+        title={title || lastBreadcrumb?.title || 'Page'}
+        subtitle={subtitle}
+        actions={actions}
+        showBackButton={showBackButton}
+        backUrl={backUrl}
+      />
+    );
+  }, [title, subtitle, actions]);
 
   return (
     <SidebarProvider defaultOpen={true}>
@@ -129,20 +177,22 @@ export default function Authenticated({
         </SidebarFooter>
       </Sidebar>
       <SidebarInset>
-        <div className="flex min-h-screen w-full bg-gray-100 dark:bg-gray-900">
-          {/* Main Content */}
-          <div className="flex w-full flex-col">
-            {/* Top Navigation */}
-            <nav className="border-b border-gray-100 bg-white dark:border-gray-700 dark:bg-gray-800">
-              <div className="w-full px-4 sm:px-6 lg:px-8">
-                <div className="flex h-16 items-center gap-4">
-                  <SidebarTrigger className="inline-flex h-10 w-10 items-center justify-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-800" />
-                  {header}
-                </div>
+        <div className="flex min-h-screen w-full flex-col bg-gray-100 dark:bg-gray-900">
+          {/* Top Navigation with Breadcrumbs */}
+          <nav className="border-b border-gray-100 bg-white dark:border-gray-700 dark:bg-gray-800">
+            <div className="w-full px-4 sm:px-6 lg:px-8">
+              <div className="flex h-16 items-center gap-4">
+                <SidebarTrigger className="inline-flex h-10 w-10 items-center justify-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-800" />
+                <Breadcrumbs items={breadcrumbs} />
               </div>
-            </nav>
-            <main className="w-full flex-1 p-4 sm:p-6 lg:p-8">{children}</main>
-          </div>
+            </div>
+          </nav>
+
+          {/* Page Header */}
+          {header || defaultHeader}
+
+          {/* Main Content */}
+          <main className="flex-1">{children}</main>
         </div>
       </SidebarInset>
     </SidebarProvider>
