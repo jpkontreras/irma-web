@@ -22,7 +22,16 @@ import {
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Restaurant } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
-import { Clock, Globe, Mail, Phone, Plus } from 'lucide-react';
+import {
+  Clock,
+  Eye,
+  Globe,
+  Mail,
+  Pencil,
+  Phone,
+  Plus,
+  Trash,
+} from 'lucide-react';
 import { useState } from 'react';
 
 interface Props {
@@ -121,19 +130,47 @@ export default function Index({ restaurants }: Props) {
                           </TableCell>
                           <TableCell>
                             <div className="flex items-center gap-2">
-                              <Link
-                                href={route('restaurants.edit', restaurant.id)}
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                asChild
+                                className="text-gray-600 hover:text-gray-900"
+                              >
+                                <Link
+                                  href={route(
+                                    'restaurants.show',
+                                    restaurant.id,
+                                  )}
+                                >
+                                  <Eye className="mr-1 h-4 w-4" />
+                                  View
+                                </Link>
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                asChild
                                 className="text-blue-600 hover:text-blue-900"
                               >
-                                Edit
-                              </Link>
+                                <Link
+                                  href={route(
+                                    'restaurants.edit',
+                                    restaurant.id,
+                                  )}
+                                >
+                                  <Pencil className="mr-1 h-4 w-4" />
+                                  Edit
+                                </Link>
+                              </Button>
                               <AlertDialog>
                                 <AlertDialogTrigger asChild>
                                   <Button
                                     variant="ghost"
+                                    size="sm"
                                     className="text-red-600 hover:text-red-900"
                                     onClick={() => setDeletingId(restaurant.id)}
                                   >
+                                    <Trash className="mr-1 h-4 w-4" />
                                     Delete
                                   </Button>
                                 </AlertDialogTrigger>
