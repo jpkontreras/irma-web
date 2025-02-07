@@ -10,16 +10,24 @@ use Illuminate\Support\Str;
 
 class MenuController extends Controller
 {
-  public function index(Restaurant $restaurant)
+  public function index(Request $request, Restaurant $restaurant)
   {
+    if ($request->user()->cannot('view', $restaurant)) {
+      abort(403);
+    }
+
     return Inertia::render('Menus/Index', [
       'restaurant' => $restaurant->load('menus'),
       'menus' => $restaurant->menus()->with('menuItems')->paginate(10)
     ]);
   }
 
-  public function create(Restaurant $restaurant)
+  public function create(Request $request, Restaurant $restaurant)
   {
+    if ($request->user()->cannot('update', $restaurant)) {
+      abort(403);
+    }
+
     return Inertia::render('Menus/Create', [
       'restaurant' => $restaurant
     ]);
@@ -27,6 +35,10 @@ class MenuController extends Controller
 
   public function store(Request $request, Restaurant $restaurant)
   {
+    if ($request->user()->cannot('update', $restaurant)) {
+      abort(403);
+    }
+
     $validated = $request->validate([
       'name' => 'required|string|max:255',
       'description' => 'nullable|string',
@@ -44,8 +56,12 @@ class MenuController extends Controller
       ->with('success', 'Menu created successfully.');
   }
 
-  public function edit(Restaurant $restaurant, Menu $menu)
+  public function edit(Request $request, Restaurant $restaurant, Menu $menu)
   {
+    if ($request->user()->cannot('update', $menu)) {
+      abort(403);
+    }
+
     return Inertia::render('Menus/Edit', [
       'restaurant' => $restaurant,
       'menu' => $menu
@@ -54,6 +70,10 @@ class MenuController extends Controller
 
   public function update(Request $request, Restaurant $restaurant, Menu $menu)
   {
+    if ($request->user()->cannot('update', $menu)) {
+      abort(403);
+    }
+
     $validated = $request->validate([
       'name' => 'required|string|max:255',
       'description' => 'nullable|string',
@@ -73,14 +93,22 @@ class MenuController extends Controller
 
   public function destroy(Restaurant $restaurant, Menu $menu)
   {
+    if ($request->user()->cannot('delete', $menu)) {
+      abort(403);
+    }
+
     $menu->delete();
 
     return redirect()->route('restaurants.menus.index', $restaurant)
       ->with('success', 'Menu deleted successfully.');
   }
 
-  public function show(Restaurant $restaurant, Menu $menu)
+  public function show(Request $request, Restaurant $restaurant, Menu $menu)
   {
+    if ($request->user()->cannot('view', $menu)) {
+      abort(403);
+    }
+
     return Inertia::render('Menus/Show', [
       'restaurant' => $restaurant,
       'menu' => $menu
