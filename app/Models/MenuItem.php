@@ -4,26 +4,32 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class MenuItem extends Model
 {
-  use HasFactory;
+  use HasFactory, SoftDeletes;
 
   protected $fillable = [
     'restaurant_id',
     'name',
+    'slug',
     'description',
     'price',
     'category',
-    'preparation_time',
     'is_available',
+    'options',
+    'preparation_time',
+    'notes',
   ];
 
   protected $casts = [
     'price' => 'decimal:2',
     'is_available' => 'boolean',
+    'options' => 'array',
+    'preparation_time' => 'integer',
   ];
 
   /**
@@ -34,11 +40,10 @@ class MenuItem extends Model
     return $this->belongsTo(Restaurant::class);
   }
 
-  /**
-   * Get the order items for this menu item.
-   */
-  public function orderItems(): HasMany
+  public function menus(): BelongsToMany
   {
-    return $this->hasMany(OrderItem::class);
+    return $this->belongsToMany(Menu::class)
+      ->withPivot('display_order', 'special_price')
+      ->withTimestamps();
   }
 }

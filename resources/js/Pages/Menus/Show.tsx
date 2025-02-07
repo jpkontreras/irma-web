@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Menu, Restaurant } from '@/types';
 import { Head, Link } from '@inertiajs/react';
-import { Edit } from 'lucide-react';
+import { Edit, UtensilsCrossed } from 'lucide-react';
 
 interface Props {
   restaurant: Restaurant;
@@ -18,14 +18,27 @@ export default function Show({ restaurant, menu }: Props) {
         title={menu.name}
         subtitle={`Menu details for ${restaurant.name}`}
         actions={
-          <Link
-            href={route('restaurants.menus.edit', [restaurant.id, menu.id])}
-          >
-            <Button>
-              <Edit className="mr-2 h-4 w-4" />
-              Edit Menu
-            </Button>
-          </Link>
+          <div className="flex gap-2">
+            <Link
+              href={route('restaurants.menus.menu-items.index', [
+                restaurant.id,
+                menu.id,
+              ])}
+            >
+              <Button variant="outline">
+                <UtensilsCrossed className="mr-2 h-4 w-4" />
+                Menu Items
+              </Button>
+            </Link>
+            <Link
+              href={route('restaurants.menus.edit', [restaurant.id, menu.id])}
+            >
+              <Button>
+                <Edit className="mr-2 h-4 w-4" />
+                Edit Menu
+              </Button>
+            </Link>
+          </div>
         }
       >
         <div className="flex h-full flex-1 flex-col">

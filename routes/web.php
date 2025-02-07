@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RestaurantController;
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\MenuItemController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -29,6 +30,15 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('restaurants', RestaurantController::class);
     Route::resource('restaurants.menus', MenuController::class);
+    Route::resource('restaurants.menu-items', MenuItemController::class);
+    Route::get('restaurants/{restaurant}/menus/{menu}/menu-items', [MenuItemController::class, 'index'])
+        ->name('restaurants.menus.menu-items.index');
+    Route::post('restaurants/{restaurant}/menus/{menu}/menu-items/{menuItem}/attach', [MenuItemController::class, 'attach'])
+        ->name('restaurants.menus.menu-items.attach');
+    Route::patch('restaurants/{restaurant}/menus/{menu}/menu-items/{menuItem}/settings', [MenuItemController::class, 'updateMenuSettings'])
+        ->name('restaurants.menus.menu-items.settings');
+    Route::delete('restaurants/{restaurant}/menus/{menu}/menu-items/{menuItem}/detach', [MenuItemController::class, 'detach'])
+        ->name('restaurants.menus.menu-items.detach');
 });
 
 require __DIR__ . '/auth.php';

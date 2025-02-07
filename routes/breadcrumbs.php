@@ -4,6 +4,7 @@ use Diglactic\Breadcrumbs\Breadcrumbs;
 use Diglactic\Breadcrumbs\Generator as BreadcrumbTrail;
 use App\Models\Restaurant;
 use App\Models\Menu;
+use App\Models\MenuItem;
 
 // Dashboard
 Breadcrumbs::for('dashboard', function (BreadcrumbTrail $trail) {
@@ -40,6 +41,12 @@ Breadcrumbs::for('restaurants.edit', function (BreadcrumbTrail $trail, $restaura
   $trail->push('Edit', route('restaurants.edit', $restaurant));
 });
 
+// Dashboard > Restaurants > [Restaurant] > Menus
+Breadcrumbs::for('restaurants.menus.index', function (BreadcrumbTrail $trail, Restaurant $restaurant) {
+  $trail->parent('restaurants.show', $restaurant);
+  $trail->push('Menus', route('restaurants.menus.index', $restaurant));
+});
+
 // Dashboard > Restaurants > [Restaurant] > Create Menu
 Breadcrumbs::for('restaurants.menus.create', function (BreadcrumbTrail $trail, Restaurant $restaurant) {
   $trail->parent('restaurants.show', $restaurant);
@@ -56,4 +63,58 @@ Breadcrumbs::for('restaurants.menus.show', function (BreadcrumbTrail $trail, Res
 Breadcrumbs::for('restaurants.menus.edit', function (BreadcrumbTrail $trail, Restaurant $restaurant, Menu $menu) {
   $trail->parent('restaurants.menus.show', $restaurant, $menu);
   $trail->push('Edit', route('restaurants.menus.edit', [$restaurant, $menu]));
+});
+
+// Dashboard > Restaurants > [Restaurant] > Menu Items
+Breadcrumbs::for('restaurants.menu-items.index', function (BreadcrumbTrail $trail, Restaurant $restaurant) {
+  $trail->parent('restaurants.show', $restaurant);
+  $trail->push('Menu Items', route('restaurants.menu-items.index', $restaurant));
+});
+
+// Dashboard > Restaurants > [Restaurant] > Menu Items > Create
+Breadcrumbs::for('restaurants.menu-items.create', function (BreadcrumbTrail $trail, Restaurant $restaurant) {
+  $trail->parent('restaurants.menu-items.index', $restaurant);
+  $trail->push('Create Item', route('restaurants.menu-items.create', $restaurant));
+});
+
+// Dashboard > Restaurants > [Restaurant] > Menu Items > [MenuItem]
+Breadcrumbs::for('restaurants.menu-items.show', function (BreadcrumbTrail $trail, Restaurant $restaurant, $menuItem) {
+  $trail->parent('restaurants.menu-items.index', $restaurant);
+  if (is_string($menuItem) || is_numeric($menuItem)) {
+    $menuItem = MenuItem::findOrFail($menuItem);
+  }
+  $trail->push($menuItem->name, route('restaurants.menu-items.show', [$restaurant, $menuItem]));
+});
+
+// Dashboard > Restaurants > [Restaurant] > Menu Items > [MenuItem] > Edit
+Breadcrumbs::for('restaurants.menu-items.edit', function (BreadcrumbTrail $trail, Restaurant $restaurant, $menuItem) {
+  if (is_string($menuItem) || is_numeric($menuItem)) {
+    $menuItem = MenuItem::findOrFail($menuItem);
+  }
+  $trail->parent('restaurants.menu-items.show', $restaurant, $menuItem);
+  $trail->push('Edit', route('restaurants.menu-items.edit', [$restaurant, $menuItem]));
+});
+
+// Dashboard > Restaurants > [Restaurant] > [Menu] > Menu Items
+Breadcrumbs::for('restaurants.menus.menu-items.index', function (BreadcrumbTrail $trail, Restaurant $restaurant, Menu $menu) {
+  $trail->parent('restaurants.menus.show', $restaurant, $menu);
+  $trail->push('Menu Items', route('restaurants.menus.menu-items.index', [$restaurant, $menu]));
+});
+
+// Dashboard > Restaurants > [Restaurant] > [Menu] > Menu Items > [MenuItem]
+Breadcrumbs::for('restaurants.menus.menu-items.show', function (BreadcrumbTrail $trail, Restaurant $restaurant, Menu $menu, MenuItem $menuItem) {
+  $trail->parent('restaurants.menus.menu-items.index', $restaurant, $menu);
+  $trail->push($menuItem->name, route('restaurants.menu-items.show', [$restaurant, $menuItem]));
+});
+
+// Dashboard > Restaurants > [Restaurant] > [Menu] > Menu Items > [MenuItem] > Edit
+Breadcrumbs::for('restaurants.menus.menu-items.edit', function (BreadcrumbTrail $trail, Restaurant $restaurant, Menu $menu, MenuItem $menuItem) {
+  $trail->parent('restaurants.menus.menu-items.show', $restaurant, $menu, $menuItem);
+  $trail->push('Edit', route('restaurants.menu-items.edit', [$restaurant, $menuItem]));
+});
+
+// Dashboard > Restaurants > [Restaurant] > [Menu] > Menu Items > Create
+Breadcrumbs::for('restaurants.menus.menu-items.create', function (BreadcrumbTrail $trail, Restaurant $restaurant, Menu $menu) {
+  $trail->parent('restaurants.menus.menu-items.index', $restaurant, $menu);
+  $trail->push('Create Item', route('restaurants.menu-items.create', [$restaurant]));
 });
