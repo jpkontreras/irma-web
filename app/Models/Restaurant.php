@@ -38,6 +38,14 @@ class Restaurant extends Model
   }
 
   /**
+   * Get the menus for the restaurant.
+   */
+  public function menus(): HasMany
+  {
+    return $this->hasMany(Menu::class);
+  }
+
+  /**
    * Get the tables for the restaurant.
    */
   public function tables(): HasMany

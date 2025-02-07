@@ -3,6 +3,7 @@
 use Diglactic\Breadcrumbs\Breadcrumbs;
 use Diglactic\Breadcrumbs\Generator as BreadcrumbTrail;
 use App\Models\Restaurant;
+use App\Models\Menu;
 
 // Dashboard
 Breadcrumbs::for('dashboard', function (BreadcrumbTrail $trail) {
@@ -37,4 +38,22 @@ Breadcrumbs::for('restaurants.edit', function (BreadcrumbTrail $trail, $restaura
   }
   $trail->parent('restaurants.show', $restaurant);
   $trail->push('Edit', route('restaurants.edit', $restaurant));
+});
+
+// Dashboard > Restaurants > [Restaurant] > Create Menu
+Breadcrumbs::for('restaurants.menus.create', function (BreadcrumbTrail $trail, Restaurant $restaurant) {
+  $trail->parent('restaurants.show', $restaurant);
+  $trail->push('Create Menu', route('restaurants.menus.create', $restaurant));
+});
+
+// Dashboard > Restaurants > [Restaurant] > [Menu]
+Breadcrumbs::for('restaurants.menus.show', function (BreadcrumbTrail $trail, Restaurant $restaurant, Menu $menu) {
+  $trail->parent('restaurants.show', $restaurant);
+  $trail->push($menu->name, route('restaurants.menus.show', [$restaurant, $menu]));
+});
+
+// Dashboard > Restaurants > [Restaurant] > [Menu] > Edit
+Breadcrumbs::for('restaurants.menus.edit', function (BreadcrumbTrail $trail, Restaurant $restaurant, Menu $menu) {
+  $trail->parent('restaurants.menus.show', $restaurant, $menu);
+  $trail->push('Edit', route('restaurants.menus.edit', [$restaurant, $menu]));
 });

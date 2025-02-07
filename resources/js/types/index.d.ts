@@ -19,6 +19,24 @@ export interface Restaurant {
   timezone: string;
   user_id: number;
   user?: User;
+  menus?: Menu[];
+  created_at: string;
+  updated_at: string;
+  deleted_at: string | null;
+}
+
+export interface Menu {
+  id: number;
+  restaurant_id: number;
+  name: string;
+  slug: string;
+  description: string | null;
+  type: string | null;
+  is_active: boolean;
+  available_from: string | null;
+  available_until: string | null;
+  available_days: string[] | null;
+  categories_order: string[] | null;
   created_at: string;
   updated_at: string;
   deleted_at: string | null;

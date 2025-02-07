@@ -16,7 +16,6 @@ class Menu extends Model
   use SoftDeletes;
 
   protected $fillable = [
-    'restaurant_id',
     'name',
     'slug',
     'description',
@@ -49,10 +48,9 @@ class Menu extends Model
    */
   public function menuItems(): BelongsToMany
   {
-    return $this->belongsToMany(MenuItem::class, 'menu_menu_item')
-      ->withPivot(['display_order', 'special_price'])
-      ->withTimestamps()
-      ->orderBy('display_order');
+    return $this->belongsToMany(MenuItem::class)
+      ->withPivot('display_order', 'special_price')
+      ->withTimestamps();
   }
 
   /**
