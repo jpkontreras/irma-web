@@ -36,10 +36,24 @@ return new class extends Migration
       $table->index(['restaurant_id', 'category']);
       $table->index(['restaurant_id', 'is_available']);
     });
+
+    // Create pivot table for menu_items and menus
+    Schema::create('menu_menu_item', function (Blueprint $table) {
+      $table->id();
+      $table->foreignId('menu_id')->constrained()->cascadeOnDelete();
+      $table->foreignId('menu_item_id')->constrained()->cascadeOnDelete();
+      $table->integer('display_order')->nullable();
+      $table->decimal('special_price', 10, 2)->nullable()->comment('Override price for this menu');
+      $table->timestamps();
+
+      $table->unique(['menu_id', 'menu_item_id']);
+      $table->index('display_order');
+    });
   }
 
   public function down(): void
   {
+    Schema::dropIfExists('menu_menu_item');
     Schema::dropIfExists('menu_items');
   }
 };
