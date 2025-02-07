@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\MenuItem;
 use App\Models\Restaurant;
 use App\Models\Menu;
+use App\Services\MenuItemService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Str;
@@ -13,28 +14,22 @@ use Inertia\Inertia;
 
 class MenuItemController extends Controller
 {
+  protected $menuItemService;
+
+  public function __construct(MenuItemService $menuItemService)
+  {
+    $this->menuItemService = $menuItemService;
+  }
+
   /**
    * Display a listing of the menu items.
    */
-  public function index(Request $request, Restaurant $restaurant, Menu $menu = null)
+  public function index(Request $request, Restaurant $restaurant, Menu $menu)
   {
-    if ($request->user()->cannot('view', $restaurant)) {
-      abort(403);
-    }
+    Gate::authorize('view', $restaurant);
 
-    $query = $menu ? $menu->menuItems() : $restaurant->menuItems();
-
-    $menuItems = $query
-      ->orderBy('category')
-      ->orderBy('name')
-      ->paginate();
-
-    $categories = $query
-      ->select('category')
-      ->distinct()
-      ->pluck('category')
-      ->filter()
-      ->values();
+    $menuItems = $this->menuItemService->getMenuItems($restaurant, $menu);
+    $categories = $this->menuItemService->getCategories($restaurant, $menu);
 
     return Inertia::render('MenuItems/Index', [
       'restaurant' => $restaurant,
@@ -112,16 +107,14 @@ class MenuItemController extends Controller
    */
   public function attach(Request $request, Restaurant $restaurant, Menu $menu, MenuItem $menuItem)
   {
-    if ($request->user()->cannot('update', $restaurant)) {
-      abort(403);
-    }
+    Gate::authorize('update', $restaurant);
 
     $validated = $request->validate([
       'display_order' => ['nullable', 'integer', 'min:0'],
       'special_price' => ['nullable', 'numeric', 'min:0'],
     ]);
 
-    $menu->menuItems()->attach($menuItem->id, $validated);
+    $this->menuItemService->attachToMenu($menu, $menuItem, $validated);
 
     return back();
   }
@@ -131,16 +124,14 @@ class MenuItemController extends Controller
    */
   public function updateMenuSettings(Request $request, Restaurant $restaurant, Menu $menu, MenuItem $menuItem)
   {
-    if ($request->user()->cannot('update', $restaurant)) {
-      abort(403);
-    }
+    Gate::authorize('update', $restaurant);
 
     $validated = $request->validate([
       'display_order' => ['nullable', 'integer', 'min:0'],
       'special_price' => ['nullable', 'numeric', 'min:0'],
     ]);
 
-    $menu->menuItems()->updateExistingPivot($menuItem->id, $validated);
+    $this->menuItemService->updateMenuSettings($menu, $menuItem, $validated);
 
     return back();
   }
@@ -148,13 +139,11 @@ class MenuItemController extends Controller
   /**
    * Detach menu item from menu.
    */
-  public function detach(Restaurant $restaurant, Menu $menu, MenuItem $menuItem)
+  public function detach(Request $request, Restaurant $restaurant, Menu $menu, MenuItem $menuItem)
   {
-    if ($request->user()->cannot('update', $restaurant)) {
-      abort(403);
-    }
+    Gate::authorize('update', $restaurant);
 
-    $menu->menuItems()->detach($menuItem->id);
+    $this->menuItemService->detachFromMenu($menu, $menuItem);
 
     return back();
   }

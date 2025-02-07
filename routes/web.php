@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RestaurantController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\MenuItemController;
+use App\Http\Controllers\UnassignedMenuItemController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -30,7 +31,7 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('restaurants', RestaurantController::class);
     Route::resource('restaurants.menus', MenuController::class);
-    Route::resource('restaurants.menu-items', MenuItemController::class);
+    Route::resource('restaurants.menu-items', UnassignedMenuItemController::class);
     Route::get('restaurants/{restaurant}/menus/{menu}/menu-items', [MenuItemController::class, 'index'])
         ->name('restaurants.menus.menu-items.index');
     Route::post('restaurants/{restaurant}/menus/{menu}/menu-items/{menuItem}/attach', [MenuItemController::class, 'attach'])

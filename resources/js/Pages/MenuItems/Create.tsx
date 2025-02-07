@@ -13,8 +13,19 @@ interface Props {
   categories: string[];
 }
 
+interface FormData {
+  name: string;
+  description: string;
+  price: string;
+  category: string;
+  is_available: boolean;
+  preparation_time: string;
+  notes: string;
+  options: any[];
+}
+
 export default function Create({ restaurant, menu, categories }: Props) {
-  const { data, setData, post, processing, errors } = useForm({
+  const { data, setData, post, processing, errors } = useForm<FormData>({
     name: '',
     description: '',
     price: '',
@@ -25,13 +36,34 @@ export default function Create({ restaurant, menu, categories }: Props) {
     options: [],
   });
 
+  function validateForm(): boolean {
+    if (!data.name.trim()) {
+      return false;
+    }
+    if (!data.category.trim()) {
+      return false;
+    }
+    const price = parseFloat(data.price);
+    if (isNaN(price) || price <= 0) {
+      return false;
+    }
+    if (data.preparation_time && parseInt(data.preparation_time) < 0) {
+      return false;
+    }
+    return true;
+  }
+
   function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    const route = menu
+    if (!validateForm()) {
+      return;
+    }
+
+    const submitUrl = menu
       ? route('restaurants.menus.menu-items.store', [restaurant.id, menu.id])
       : route('restaurants.menu-items.store', restaurant.id);
 
-    post(route);
+    post(submitUrl);
   }
 
   return (
@@ -57,6 +89,8 @@ export default function Create({ restaurant, menu, categories }: Props) {
                     value={data.name}
                     onChange={(e) => setData('name', e.target.value)}
                     placeholder="Item name"
+                    error={errors.name}
+                    required
                   />
                   {errors.name && (
                     <p className="text-sm text-red-600">{errors.name}</p>
@@ -159,7 +193,11 @@ export default function Create({ restaurant, menu, categories }: Props) {
                 </div>
 
                 <div className="flex justify-end">
-                  <Button type="submit" className="ml-4" disabled={processing}>
+                  <Button
+                    type="submit"
+                    className="ml-4"
+                    disabled={processing || !validateForm()}
+                  >
                     Create Item
                   </Button>
                 </div>

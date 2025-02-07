@@ -46,7 +46,7 @@ export default function Index({
 
   const handleDelete = () => {
     if (deletingId) {
-      const route = menu
+      const deleteUrl = menu
         ? route('restaurants.menus.menu-items.destroy', [
             restaurant.id,
             menu.id,
@@ -54,14 +54,14 @@ export default function Index({
           ])
         : route('restaurants.menu-items.destroy', [restaurant.id, deletingId]);
 
-      router.delete(route);
+      router.delete(deleteUrl);
       setDeletingId(null);
     }
   };
 
-  const baseRoute = menu
-    ? route('restaurants.menus.menu-items', [restaurant.id, menu.id])
-    : route('restaurants.menu-items', restaurant.id);
+  const menuItemsUrl = menu
+    ? route('restaurants.menus.menu-items.index', [restaurant.id, menu.id])
+    : route('restaurants.menu-items.index', restaurant.id);
 
   return (
     <>
