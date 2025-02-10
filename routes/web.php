@@ -5,6 +5,7 @@ use App\Http\Controllers\RestaurantController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\MenuItemController;
 use App\Http\Controllers\UnassignedMenuItemController;
+use App\Http\Controllers\OnboardingController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -26,6 +27,19 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+Route::middleware(['auth', 'verified'])->prefix('onboarding')->name('onboarding.')->group(function () {
+    Route::get('/business-setup', [OnboardingController::class, 'showBusinessSetup'])
+        ->name('business-setup');
+    Route::post('/business-setup', [OnboardingController::class, 'storeBusinessSetup']);
+
+    Route::get('/restaurant-setup', [OnboardingController::class, 'showRestaurantSetup'])
+        ->name('restaurant-setup');
+    Route::post('/restaurant-setup', [OnboardingController::class, 'storeRestaurantSetup']);
+
+    Route::post('/skip', [OnboardingController::class, 'skip'])
+        ->name('skip');
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {

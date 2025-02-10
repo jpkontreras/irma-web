@@ -3,9 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Menu;
-use App\Models\MenuItem;
 use App\Models\Restaurant;
-use App\Policies\MenuItemPolicy;
 use App\Policies\MenuPolicy;
 use App\Policies\RestaurantPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
@@ -20,7 +18,6 @@ class AuthServiceProvider extends ServiceProvider
   protected $policies = [
     Restaurant::class => RestaurantPolicy::class,
     Menu::class => MenuPolicy::class,
-    MenuItem::class => MenuItemPolicy::class,
   ];
 
   /**

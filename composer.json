@@ -13,6 +13,7 @@
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
         "robertboes/inertia-breadcrumbs": "0.7.0-beta",
+        "spatie/laravel-onboard": "^2.6",
         "tightenco/ziggy": "^2.0"
     },
     "require-dev": {

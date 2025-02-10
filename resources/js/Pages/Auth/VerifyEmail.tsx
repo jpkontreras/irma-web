@@ -21,7 +21,7 @@ export default function VerifyEmail({ status }: { status?: string }) {
             <img
               src="/images/face.svg"
               alt="Unbound"
-              className="mb-8 size-16 rounded-xl"
+              className="mb-8 size-48 rounded-xl"
             />
             <h2 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
               Verify your email
