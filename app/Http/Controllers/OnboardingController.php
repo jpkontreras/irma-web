@@ -18,18 +18,16 @@ class OnboardingController extends Controller
   public function storeBusinessSetup(Request $request)
   {
     $validated = $request->validate([
-      'business_name' => 'required|string|max:255',
-      'business_type' => 'required|string|in:restaurant,cafe,bar',
+      'business_type' => 'required|string|in:restaurant,cafe,bar,quick_service,other',
     ]);
 
-    $organization = Organization::create([
-      'name' => $validated['business_name'],
-      'slug' => Str::slug($validated['business_name']),
+    // Store the business type for the authenticated user
+    $request->user()->update([
+      'business_type' => $validated['business_type'],
+      'onboarding_completed' => true,
     ]);
 
-    $organization->users()->attach(auth()->id(), ['role' => 'owner']);
-
-    return redirect()->route('onboarding.restaurant-setup');
+    return redirect()->route('dashboard');
   }
 
   public function showRestaurantSetup()
@@ -46,7 +44,7 @@ class OnboardingController extends Controller
       'timezone' => 'required|string|timezone',
     ]);
 
-    $organization = auth()->user()->organizations()
+    $organization = $request->user()->organizations()
       ->wherePivot('role', 'owner')
       ->firstOrFail();
 
@@ -56,14 +54,19 @@ class OnboardingController extends Controller
       'address' => $validated['address'],
       'phone' => $validated['phone'],
       'timezone' => $validated['timezone'],
-      'user_id' => auth()->id(),
+      'user_id' => $request->user()->id,
     ]);
 
     return redirect()->route('dashboard');
   }
 
-  public function skip()
+  public function skip(Request $request)
   {
+    // Mark onboarding as completed without storing business type
+    $request->user()->update([
+      'onboarding_completed' => true,
+    ]);
+
     return redirect()->route('dashboard');
   }
 }

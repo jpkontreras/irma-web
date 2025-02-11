@@ -1,61 +1,62 @@
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
-import GuestLayout from '@/Layouts/GuestLayout';
-import { Head, Link, useForm } from '@inertiajs/react';
-import { FormEventHandler } from 'react';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import OnboardingLayout from '@/Layouts/OnboardingLayout';
+import { Link, useForm } from '@inertiajs/react';
+import { LogOut } from 'lucide-react';
 
 export default function VerifyEmail({ status }: { status?: string }) {
   const { post, processing } = useForm({});
 
-  const submit: FormEventHandler = (e) => {
+  function submit(e: React.FormEvent) {
     e.preventDefault();
     post(route('verification.send'));
-  };
+  }
 
   return (
-    <GuestLayout>
-      <Head title="Verify Email - Unbound" />
+    <OnboardingLayout
+      title="Verify Your Email"
+      subtitle="Thanks for signing up! Before getting started, could you verify your email address by clicking on the link we just emailed to you?"
+      currentStep={1}
+      totalSteps={4}
+    >
+      <div className="space-y-6">
+        <Card className="shadow-sm">
+          <CardHeader
+            className={status === 'verification-link-sent' ? 'p-6' : 'p-3'}
+          >
+            {status === 'verification-link-sent' && (
+              <Alert variant="success">
+                <AlertDescription>
+                  A new verification link has been sent to your email address.
+                </AlertDescription>
+              </Alert>
+            )}
+          </CardHeader>
 
-      <div className="flex min-h-full flex-1 flex-col items-center justify-center px-6">
-        <div className="w-full max-w-md">
-          <div className="flex flex-col items-center">
-            <img
-              src="/images/face.svg"
-              alt="Unbound"
-              className="mb-8 size-48 rounded-xl"
-            />
-            <h2 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-              Verify your email
-            </h2>
-            <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
-              Thanks for signing up! Before getting started, please verify your
-              email address by clicking on the link we just emailed to you.
-            </p>
-          </div>
-
-          {status === 'verification-link-sent' && (
-            <div className="mt-4 rounded-lg bg-green-50 p-4 text-sm font-medium text-green-600 dark:bg-green-900/50 dark:text-green-400">
-              A new verification link has been sent to your email address.
-            </div>
-          )}
-
-          <form onSubmit={submit} className="mt-8 space-y-6">
-            <div className="flex flex-col space-y-4">
-              <Button className="w-full justify-center" disabled={processing}>
+          <CardContent>
+            <form onSubmit={submit}>
+              <Button type="submit" className="w-full" disabled={processing}>
                 Resend Verification Email
               </Button>
+            </form>
+          </CardContent>
+        </Card>
 
-              <Link
-                href={route('logout')}
-                method="post"
-                as="button"
-                className="text-sm font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
-              >
-                Log Out
-              </Link>
-            </div>
-          </form>
+        <div className="flex justify-center">
+          <Button
+            variant="ghost"
+            size="sm"
+            asChild
+            className="text-muted-foreground hover:text-foreground"
+          >
+            <Link href={route('logout')} method="post">
+              <LogOut className="mr-2 h-4 w-4" />
+              Log Out
+            </Link>
+          </Button>
         </div>
       </div>
-    </GuestLayout>
+    </OnboardingLayout>
   );
 }

@@ -27,6 +27,8 @@ class User extends Authenticatable implements Onboardable
         'name',
         'email',
         'password',
+        'business_type',
+        'onboarding_completed',
     ];
 
     /**

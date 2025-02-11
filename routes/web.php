@@ -56,4 +56,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('restaurants.menus.menu-items.detach');
 });
 
+Route::middleware(['auth'])->group(function () {
+    Route::post('/onboarding/business-setup', [OnboardingController::class, 'storeBusinessSetup'])
+        ->name('onboarding.business-setup.store');
+
+    Route::post('/onboarding/skip', [OnboardingController::class, 'skip'])
+        ->name('onboarding.skip');
+});
+
 require __DIR__ . '/auth.php';
