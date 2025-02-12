@@ -54,6 +54,29 @@ class User extends Authenticatable implements Onboardable
         ];
     }
 
+
+    /**
+     * Create a default settings record for the user.
+     */
+    protected static function booted()
+    {
+        static::created(function ($user) {
+            $user->settings()->create([
+                'settings' => [
+                    'theme' => 'system',
+                    'analytics_opt_out' => false,
+                    'notifications' => [
+                        'email' => true,
+                        'push' => true
+                    ],
+                    'onboarding' => [
+                        'skip' => false
+                    ]
+                ]
+            ]);
+        });
+    }
+
     /**
      * Get the restaurants owned by the user.
      */
@@ -70,5 +93,11 @@ class User extends Authenticatable implements Onboardable
         return $this->belongsToMany(Organization::class)
             ->withPivot('role')
             ->withTimestamps();
+    }
+
+
+    public function settings()
+    {
+        return $this->hasOne(UserSettings::class);
     }
 }

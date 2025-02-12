@@ -12,7 +12,7 @@ return new class extends Migration
   {
     Schema::create('menu_items', function (Blueprint $table) {
       $table->id();
-      $table->foreignId('restaurant_id')->constrained()->cascadeOnDelete();
+      $table->foreignId('organization_id')->nullable()->after('restaurant_id')->constrained();
 
       // Item information
       $table->string('name');
@@ -33,8 +33,8 @@ return new class extends Migration
       // Indexes
       $table->index('category');
       $table->index('is_available');
-      $table->index(['restaurant_id', 'category']);
-      $table->index(['restaurant_id', 'is_available']);
+      $table->index(['organization_id', 'category']);
+      $table->index(['organization_id', 'is_available']);
     });
 
     // Create pivot table for menu_items and menus
@@ -45,7 +45,6 @@ return new class extends Migration
       $table->integer('display_order')->nullable();
       $table->decimal('special_price', 10, 2)->nullable()->comment('Override price for this menu');
       $table->timestamps();
-
       $table->unique(['menu_id', 'menu_item_id']);
       $table->index('display_order');
     });

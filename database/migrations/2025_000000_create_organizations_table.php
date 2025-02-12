@@ -27,31 +27,10 @@ return new class extends Migration
 
       $table->unique(['organization_id', 'user_id']);
     });
-
-    // Update restaurants table to belong to an organization
-    Schema::table('restaurants', function (Blueprint $table) {
-      $table->foreignId('organization_id')->nullable()->after('user_id')->constrained();
-    });
-
-    // Update menu_items table to belong to an organization instead of restaurant
-    Schema::table('menu_items', function (Blueprint $table) {
-      $table->foreignId('organization_id')->nullable()->after('restaurant_id')->constrained();
-      // Don't drop restaurant_id yet - we'll need it for migration
-    });
   }
 
   public function down(): void
   {
-    Schema::table('menu_items', function (Blueprint $table) {
-      $table->dropForeign(['organization_id']);
-      $table->dropColumn('organization_id');
-    });
-
-    Schema::table('restaurants', function (Blueprint $table) {
-      $table->dropForeign(['organization_id']);
-      $table->dropColumn('organization_id');
-    });
-
     Schema::dropIfExists('organization_user');
     Schema::dropIfExists('organizations');
   }
