@@ -35,7 +35,7 @@ class OnboardingServiceProvider extends ServiceProvider
       ->link('/onboarding/restaurant-setup')
       ->cta('Create Restaurant')
       ->excludeIf(function (User $model) {
-        return ! $model->organizations()
+        return !$model->organizations()
           ->wherePivot('role', 'owner')
           ->exists();
       })
