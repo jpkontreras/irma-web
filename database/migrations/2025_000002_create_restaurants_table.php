@@ -37,7 +37,6 @@ return new class extends Migration
       // Indexes
       $table->index('is_active');
       $table->index('user_id');
-      $table->index('business_type');
     });
   }
 
