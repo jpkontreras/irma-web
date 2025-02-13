@@ -29,7 +29,7 @@ return new class extends Migration
 
       // Owner relationship
       $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-      $table->foreignId('organization_id')->nullable()->after('user_id')->constrained();
+      $table->foreignId('organization_id')->nullable()->constrained();
 
       $table->timestamps();
       $table->softDeletes();
@@ -37,6 +37,7 @@ return new class extends Migration
       // Indexes
       $table->index('is_active');
       $table->index('user_id');
+      $table->index('business_type');
     });
   }
 
