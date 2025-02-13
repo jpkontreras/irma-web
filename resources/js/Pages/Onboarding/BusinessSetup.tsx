@@ -67,12 +67,10 @@ export default function BusinessSetup() {
   function onSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    // Validate business type selection
     if (!businessTypes.some((type) => type.id === data.business_type)) {
       return;
     }
-
-    post(route('onboarding.business-setup'));
+    post(route('onboarding.business-setup.store'));
   }
 
   // Skip onboarding

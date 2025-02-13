@@ -21,10 +21,24 @@ class OnboardingController extends Controller
       'business_type' => 'required|string|in:restaurant,cafe,bar,quick_service,other',
     ]);
 
+    // Get existing organization or create new one
     $organization = $request->user()->organizations()
       ->wherePivot('role', 'owner')
-      ->firstOrFail();
+      ->first();
 
+    if (!$organization) {
+      // Create new organization only if user doesn't have one
+      $organization = $request->user()->organizations()->create([
+        'name' => $request->user()->name . "'s Organization",
+        'slug' => Str::slug($request->user()->name . "'s Organization"),
+        'is_active' => true,
+      ]);
+
+      // Attach the user as owner through the pivot table
+      $organization->users()->attach($request->user()->id, ['role' => 'owner']);
+    }
+
+    // Create onboarding data
     OnboardingData::create([
       'organization_id' => $organization->id,
       'business_type' => $validated['business_type'],

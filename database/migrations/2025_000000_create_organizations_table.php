@@ -25,7 +25,7 @@ return new class extends Migration
       $table->string('role')->default('member'); // owner, admin, member
       $table->timestamps();
 
-      $table->unique(['organization_id', 'user_id']);
+      $table->unique(['organization_id', 'user_id', "role"]);
     });
   }
 
