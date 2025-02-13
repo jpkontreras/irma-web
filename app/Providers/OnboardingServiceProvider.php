@@ -14,7 +14,10 @@ class OnboardingServiceProvider extends ServiceProvider
       ->link('/verify-email')
       ->cta('Verify Email')
       ->excludeIf(function (User $model) {
-        return $model->settings->settings['onboarding']['skip'] ?? false;
+        return $model->organizations()
+          ->whereHas('onboardingData', function ($query) {
+            $query->where('is_skipped', true);
+          })->exists();
       })
       ->completeIf(function (User $model) {
         return !is_null($model->email_verified_at);
@@ -24,13 +27,16 @@ class OnboardingServiceProvider extends ServiceProvider
       ->link('/onboarding/business-setup')
       ->cta('Setup Business')
       ->excludeIf(function (User $model) {
-        // Skip if onboarding is skipped
-        return $model->settings->settings['onboarding']['skip'] ?? false;
+        return $model->organizations()
+          ->whereHas('onboardingData', function ($query) {
+            $query->where('is_skipped', true);
+          })->exists();
       })
       ->completeIf(function (User $model) {
         return $model->organizations()
-          ->wherePivot('role', 'owner')
-          ->exists();
+          ->whereHas('onboardingData', function ($query) {
+            $query->whereNotNull('business_type');
+          })->exists();
       });
 
     Onboard::addStep('Create First Restaurant')
@@ -38,18 +44,24 @@ class OnboardingServiceProvider extends ServiceProvider
       ->cta('Create Restaurant')
       ->excludeIf(function (User $model) {
         // Skip if onboarding is skipped or no organization exists
-        if ($model->settings->settings['onboarding']['skip'] ?? false) {
+        if ($model->organizations()
+          ->whereHas('onboardingData', function ($query) {
+            $query->where('is_skipped', true);
+          })->exists()
+        ) {
           return true;
         }
+
         return !$model->organizations()
-          ->wherePivot('role', 'owner')
-          ->exists();
+          ->whereHas('onboardingData', function ($query) {
+            $query->whereNotNull('business_type');
+          })->exists();
       })
       ->completeIf(function (User $model) {
         return $model->organizations()
-          ->wherePivot('role', 'owner')
-          ->whereHas('restaurants')
-          ->exists();
+          ->whereHas('onboardingData', function ($query) {
+            $query->whereNotNull('restaurant_id');
+          })->exists();
       });
   }
 }

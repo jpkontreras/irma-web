@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Organization;
+use App\Models\OnboardingData;
 use App\Models\Restaurant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -21,10 +21,14 @@ class OnboardingController extends Controller
       'business_type' => 'required|string|in:restaurant,cafe,bar,quick_service,other',
     ]);
 
-    // Store the business type for the authenticated user
-    $request->user()->update([
+    $organization = $request->user()->organizations()
+      ->wherePivot('role', 'owner')
+      ->firstOrFail();
+
+    OnboardingData::create([
+      'organization_id' => $organization->id,
       'business_type' => $validated['business_type'],
-      'onboarding_completed' => true,
+      'is_skipped' => false,
     ]);
 
     return redirect()->route('dashboard');
@@ -57,14 +61,24 @@ class OnboardingController extends Controller
       'user_id' => $request->user()->id,
     ]);
 
+    // Link the restaurant to the onboarding data
+    $onboardingData = $organization->onboardingData()->latest()->first();
+    if ($onboardingData) {
+      $onboardingData->update(['restaurant_id' => $restaurant->id]);
+    }
+
     return redirect()->route('dashboard');
   }
 
   public function skip(Request $request)
   {
-    // Mark onboarding as completed without storing business type
-    $request->user()->update([
-      'onboarding_completed' => true,
+    $organization = $request->user()->organizations()
+      ->wherePivot('role', 'owner')
+      ->firstOrFail();
+
+    OnboardingData::create([
+      'organization_id' => $organization->id,
+      'is_skipped' => true,
     ]);
 
     return redirect()->route('dashboard');

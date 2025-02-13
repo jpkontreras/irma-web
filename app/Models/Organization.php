@@ -48,4 +48,9 @@ class Organization extends Model
   {
     return $this->hasMany(MenuItem::class);
   }
+
+  public function onboardingData()
+  {
+    return $this->hasMany(OnboardingData::class);
+  }
 }

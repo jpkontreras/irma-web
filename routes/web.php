@@ -33,11 +33,9 @@ Route::middleware(['auth', 'verified'])->prefix('onboarding')->name('onboarding.
     Route::get('/business-setup', [OnboardingController::class, 'showBusinessSetup'])
         ->name('business-setup');
     Route::post('/business-setup', [OnboardingController::class, 'storeBusinessSetup']);
-
     Route::get('/restaurant-setup', [OnboardingController::class, 'showRestaurantSetup'])
         ->name('restaurant-setup');
     Route::post('/restaurant-setup', [OnboardingController::class, 'storeRestaurantSetup']);
-
     Route::post('/skip', [OnboardingController::class, 'skip'])
         ->name('skip');
 });
@@ -54,14 +52,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('restaurants.menus.menu-items.settings');
     Route::delete('restaurants/{restaurant}/menus/{menu}/menu-items/{menuItem}/detach', [MenuItemController::class, 'detach'])
         ->name('restaurants.menus.menu-items.detach');
-});
-
-Route::middleware(['auth'])->group(function () {
-    Route::post('/onboarding/business-setup', [OnboardingController::class, 'storeBusinessSetup'])
-        ->name('onboarding.business-setup.store');
-
-    Route::post('/onboarding/skip', [OnboardingController::class, 'skip'])
-        ->name('onboarding.skip');
 });
 
 require __DIR__ . '/auth.php';
