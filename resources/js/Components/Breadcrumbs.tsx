@@ -15,7 +15,7 @@ export default function Breadcrumbs({ items }: BreadcrumbsProps) {
   if (!items?.length) return null;
 
   return (
-    <nav className="flex" aria-label="Breadcrumb">
+    <nav className="flex w-full" aria-label="Breadcrumb">
       <ol className="flex items-center space-x-2">
         {items.map((item, index) => (
           <li key={index} className="flex items-center">

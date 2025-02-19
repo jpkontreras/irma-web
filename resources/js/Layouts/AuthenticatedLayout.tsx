@@ -1,11 +1,13 @@
 import Breadcrumbs from '@/Components/Breadcrumbs';
 import PageHeader from '@/Components/PageHeader';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { HoverCard, HoverCardContent } from '@/components/ui/hover-card';
 import {
   Sidebar,
   SidebarContent,
@@ -19,7 +21,14 @@ import {
   SidebarTrigger,
 } from '@/components/ui/sidebar';
 import { Link, usePage } from '@inertiajs/react';
-import { ChevronUp, LayoutDashboard, LogOut, User2 } from 'lucide-react';
+import { HoverCardTrigger } from '@radix-ui/react-hover-card';
+import {
+  Building2,
+  ChevronUp,
+  LayoutDashboard,
+  LogOut,
+  User2,
+} from 'lucide-react';
 import { PropsWithChildren, ReactNode, useMemo } from 'react';
 
 export default function Authenticated({
@@ -38,38 +47,11 @@ export default function Authenticated({
   const user = usePage().props.auth.user;
 
   const defaultHeader = useMemo(() => {
-    console.log({ x: route() });
-
-    const currentRoute = route().current();
-    const lastBreadcrumb = breadcrumbs[breadcrumbs.length - 1];
-    const params = route().params;
-
-    // Determine back URL based on current route
-    let backUrl;
-    let showBackButton = false;
-
-    switch (currentRoute) {
-      case 'restaurants.create':
-        backUrl = route('restaurants.index');
-        showBackButton = true;
-        break;
-      case 'restaurants.show':
-        backUrl = route('restaurants.index');
-        showBackButton = true;
-        break;
-      case 'restaurants.edit':
-        backUrl = route('restaurants.show', params.restaurant);
-        showBackButton = true;
-        break;
-    }
-
     return (
       <PageHeader
-        title={title || lastBreadcrumb?.title || 'Page'}
+        title={title || 'Page'}
         subtitle={subtitle}
         actions={actions}
-        showBackButton={showBackButton}
-        backUrl={backUrl}
       />
     );
   }, [title, subtitle, actions]);
@@ -181,9 +163,19 @@ export default function Authenticated({
           {/* Top Navigation with Breadcrumbs */}
           <nav className="border-b border-gray-100 bg-white dark:border-gray-700 dark:bg-gray-800">
             <div className="w-full px-4 sm:px-6 lg:px-8">
-              <div className="flex h-16 items-center gap-4">
+              <div className="flex h-16 items-center justify-around gap-4">
                 <SidebarTrigger className="inline-flex h-10 w-10 items-center justify-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-800" />
                 <Breadcrumbs items={breadcrumbs} />
+                <HoverCard>
+                  <HoverCardTrigger>
+                    <Button className="w-12" variant="ghost" size="icon">
+                      <Building2 className="h-4 w-4" />
+                    </Button>
+                    <HoverCardContent>
+                      The React Framework – created and maintained by @vercel.
+                    </HoverCardContent>
+                  </HoverCardTrigger>
+                </HoverCard>
               </div>
             </div>
           </nav>
