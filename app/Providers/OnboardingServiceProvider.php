@@ -43,7 +43,7 @@ class OnboardingServiceProvider extends ServiceProvider
       ->link('/onboarding/restaurant-setup')
       ->cta('Create Restaurant')
       ->excludeIf(function (User $model) {
-        // Skip if onboarding is skipped or no organization exists
+        // Skip if onboarding is skipped
         if ($model->organizations()
           ->whereHas('onboardingData', function ($query) {
             $query->where('is_skipped', true);
@@ -52,6 +52,7 @@ class OnboardingServiceProvider extends ServiceProvider
           return true;
         }
 
+        // Also exclude if business type is not set
         return !$model->organizations()
           ->whereHas('onboardingData', function ($query) {
             $query->whereNotNull('business_type');

@@ -4,13 +4,13 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import OnboardingLayout from '@/Layouts/OnboardingLayout';
 import { useForm } from '@inertiajs/react';
+import { ArrowLeft } from 'lucide-react';
 
 export default function RestaurantSetup() {
   const { data, setData, post, processing, errors } = useForm({
     name: '',
     address: '',
     phone: '',
-    timezone: '',
   });
 
   function onSubmit(e: React.FormEvent) {
@@ -18,10 +18,16 @@ export default function RestaurantSetup() {
     post(route('onboarding.restaurant-setup.store'));
   }
 
+  function goBack() {
+    post(route('onboarding.reset', { step: 'business-setup' }));
+  }
+
   return (
     <OnboardingLayout
       title="Setup Your Restaurant"
       subtitle="Add your first restaurant location"
+      currentStep={3}
+      totalSteps={3}
     >
       <Card>
         <form onSubmit={onSubmit}>
@@ -65,35 +71,24 @@ export default function RestaurantSetup() {
                 <p className="text-sm text-destructive">{errors.phone}</p>
               )}
             </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="timezone">Timezone</Label>
-              <Input
-                id="timezone"
-                value={data.timezone}
-                onChange={(e) => setData('timezone', e.target.value)}
-                placeholder="Select timezone"
-              />
-              {errors.timezone && (
-                <p className="text-sm text-destructive">{errors.timezone}</p>
-              )}
-            </div>
           </CardContent>
 
           <CardFooter className="justify-between">
             <Button
               type="button"
-              variant="outline"
-              onClick={() => window.location.href = route('onboarding.skip')}
+              variant="ghost"
+              onClick={goBack}
+              className="gap-2"
+              disabled={processing}
             >
-              Skip for now
+              <ArrowLeft className="h-4 w-4" /> Back
             </Button>
             <Button type="submit" disabled={processing}>
-              Complete Setup
+              Continue
             </Button>
           </CardFooter>
         </form>
       </Card>
     </OnboardingLayout>
   );
-} 
+}

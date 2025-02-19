@@ -38,12 +38,14 @@ class OnboardingController extends Controller
       $organization->users()->attach($request->user()->id, ['role' => 'owner']);
     }
 
-    // Create onboarding data
-    OnboardingData::create([
-      'organization_id' => $organization->id,
-      'business_type' => $validated['business_type'],
-      'is_skipped' => false,
-    ]);
+    // Update or create onboarding data
+    $organization->onboardingData()->updateOrCreate(
+      ['organization_id' => $organization->id],
+      [
+        'business_type' => $validated['business_type'],
+        'is_skipped' => false,
+      ]
+    );
 
     return redirect()->route('dashboard');
   }
@@ -59,7 +61,6 @@ class OnboardingController extends Controller
       'name' => 'required|string|max:255',
       'address' => 'required|string',
       'phone' => 'required|string',
-      'timezone' => 'required|string|timezone',
     ]);
 
     $organization = $request->user()->organizations()
@@ -71,30 +72,81 @@ class OnboardingController extends Controller
       'slug' => Str::slug($validated['name']),
       'address' => $validated['address'],
       'phone' => $validated['phone'],
-      'timezone' => $validated['timezone'],
       'user_id' => $request->user()->id,
     ]);
 
-    // Link the restaurant to the onboarding data
-    $onboardingData = $organization->onboardingData()->latest()->first();
-    if ($onboardingData) {
-      $onboardingData->update(['restaurant_id' => $restaurant->id]);
-    }
+    // Update existing onboarding data with restaurant
+    $organization->onboardingData()->updateOrCreate(
+      ['organization_id' => $organization->id],
+      ['restaurant_id' => $restaurant->id]
+    );
 
     return redirect()->route('dashboard');
   }
 
   public function skip(Request $request)
   {
+    // Get existing organization or create new one
     $organization = $request->user()->organizations()
       ->wherePivot('role', 'owner')
-      ->firstOrFail();
+      ->first();
 
-    OnboardingData::create([
-      'organization_id' => $organization->id,
-      'is_skipped' => true,
-    ]);
+    if (!$organization) {
+      // Create new organization if user doesn't have one
+      $organization = $request->user()->organizations()->create([
+        'name' => $request->user()->name . "'s Organization",
+        'slug' => Str::slug($request->user()->name . "'s Organization"),
+        'is_active' => true,
+      ]);
+
+      // Attach the user as owner
+      $organization->users()->attach($request->user()->id, ['role' => 'owner']);
+    }
+
+    // Update or create onboarding data with skipped status
+    $organization->onboardingData()->updateOrCreate(
+      ['organization_id' => $organization->id],
+      ['is_skipped' => true]
+    );
 
     return redirect()->route('dashboard');
+  }
+
+  public function reset(string $step)
+  {
+    // Get existing organization or create new one
+    $organization = request()->user()->organizations()
+      ->wherePivot('role', 'owner')
+      ->first();
+
+    if (!$organization) {
+      // Create new organization if user doesn't have one
+      $organization = request()->user()->organizations()->create([
+        'name' => request()->user()->name . "'s Organization",
+        'slug' => Str::slug(request()->user()->name . "'s Organization"),
+        'is_active' => true,
+      ]);
+
+      // Attach the user as owner
+      $organization->users()->attach(request()->user()->id, ['role' => 'owner']);
+    }
+
+    switch ($step) {
+      case 'business-setup':
+        $organization->onboardingData()->updateOrCreate(
+          ['organization_id' => $organization->id],
+          ['business_type' => null]
+        );
+        break;
+
+      case 'restaurant-setup':
+        $organization->onboardingData()->updateOrCreate(
+          ['organization_id' => $organization->id],
+          ['restaurant_id' => null]
+        );
+        break;
+    }
+
+    return redirect()->route("onboarding.{$step}");
   }
 }

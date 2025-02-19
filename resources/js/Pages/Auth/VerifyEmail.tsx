@@ -17,8 +17,6 @@ export default function VerifyEmail({ status }: { status?: string }) {
     <OnboardingLayout
       title="Verify Your Email"
       subtitle="Thanks for signing up! Before getting started, could you verify your email address by clicking on the link we just emailed to you?"
-      currentStep={1}
-      totalSteps={4}
     >
       <div className="space-y-6">
         <Card className="shadow-sm">

@@ -20,7 +20,7 @@ export default function ConfirmPassword() {
 
   return (
     <GuestLayout>
-      <Head title="Confirm Password - Unbound" />
+      <Head title="Confirm Password" />
 
       <div className="flex min-h-full flex-1 flex-col items-center justify-center px-6">
         <div className="w-full max-w-md">

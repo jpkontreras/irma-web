@@ -38,9 +38,11 @@ Route::middleware(['auth', 'verified'])->prefix('onboarding')
         Route::get('/restaurant-setup', [OnboardingController::class, 'showRestaurantSetup'])
             ->name('restaurant-setup');
         Route::post('/restaurant-setup', [OnboardingController::class, 'storeRestaurantSetup'])
-            ->name('restaurant-setup.store');;
+            ->name('restaurant-setup.store');
         Route::post('/skip', [OnboardingController::class, 'skip'])
             ->name('skip');
+        Route::post('/reset/{step}', [OnboardingController::class, 'reset'])
+            ->name('reset');
     });
 
 Route::middleware(['auth', 'verified'])->group(function () {

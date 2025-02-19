@@ -4,8 +4,8 @@ import { PropsWithChildren } from 'react';
 interface Props {
   title: string;
   subtitle?: string;
-  currentStep: number;
-  totalSteps: number;
+  currentStep?: number;
+  totalSteps?: number;
 }
 
 export default function OnboardingLayout({
@@ -29,9 +29,11 @@ export default function OnboardingLayout({
               />
 
               <div className="space-y-4 text-center">
-                <div className="text-sm text-muted-foreground">
-                  Step {currentStep} of {totalSteps}
-                </div>
+                {currentStep && totalSteps && (
+                  <div className="text-sm text-muted-foreground">
+                    Step {currentStep} of {totalSteps}
+                  </div>
+                )}
                 <h1 className="text-2xl font-bold tracking-tight">{title}</h1>
                 {subtitle && (
                   <p className="text-sm text-muted-foreground">{subtitle}</p>
