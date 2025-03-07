@@ -43,7 +43,9 @@ export default function Authenticated({
   title?: string;
   subtitle?: string;
 }>) {
-  const { breadcrumbs = [] } = usePage().props;
+  const { breadcrumbs = [], ...rest } = usePage().props;
+  console.log({ rest });
+
   const user = usePage().props.auth.user;
 
   const defaultHeader = useMemo(() => {
@@ -78,7 +80,7 @@ export default function Authenticated({
               <SidebarMenuButton
                 asChild
                 isActive={route().current('dashboard')}
-                className="w-full px-3 py-2"
+                className="w-full"
               >
                 <Link
                   href={route('dashboard')}
@@ -92,28 +94,28 @@ export default function Authenticated({
 
             {/* Commented out until routes are implemented */}
             {/* <SidebarMenuItem>
-                <SidebarMenuButton
-                  asChild
-                  isActive={route().current('users.*')}
-                >
-                  <Link href={route('users.index')}>
-                    <Users />
-                    <span>Users</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              isActive={route().current('users.*')}
+            >
+              <Link href={route('users.index')}>
+                <Users />
+                <span>Users</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
 
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  asChild
-                  isActive={route().current('settings.*')}
-                >
-                  <Link href={route('settings.index')}>
-                    <Settings />
-                    <span>Settings</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem> */}
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              isActive={route().current('settings.*')}
+            >
+              <Link href={route('settings.index')}>
+                <Settings />
+                <span>Settings</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem> */}
           </SidebarMenu>
         </SidebarContent>
 

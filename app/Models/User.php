@@ -92,6 +92,7 @@ class User extends Authenticatable implements Onboardable
     {
         return $this->belongsToMany(Organization::class)
             ->withPivot('role')
+            ->as("role")
             ->withTimestamps();
     }
 

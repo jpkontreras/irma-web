@@ -42,11 +42,20 @@ export interface Menu {
   deleted_at: string | null;
 }
 
-export type PageProps<
-  T extends Record<string, unknown> = Record<string, unknown>,
-> = T & {
+export interface PageProps<T = Record<string, unknown>> {
   auth: {
-    user: User;
+    user: {
+      name: string;
+      organization?: {
+        name: string;
+        description?: string;
+      };
+    };
   };
-  ziggy: Config & { location: string };
-};
+  breadcrumbs: Array<{
+    label: string;
+    href?: string;
+  }>;
+  [key: string]: unknown;
+  props: T;
+}

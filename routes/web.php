@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RestaurantController;
 use App\Http\Controllers\MenuController;
@@ -19,18 +20,17 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
+Route::get('/dashboard', DashboardController::class)->middleware(['auth', 'verified'])->name('dashboard');
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::middleware(['auth', 'verified'])->prefix('onboarding')
-    ->name('onboarding.')->group(function () {
+Route::middleware(['auth', 'verified'])
+    ->prefix('onboarding')
+    ->name('onboarding.')
+    ->group(function () {
         Route::get('/business-setup', [OnboardingController::class, 'showBusinessSetup'])
             ->name('business-setup');
         Route::post('/business-setup', [OnboardingController::class, 'storeBusinessSetup'])
@@ -45,18 +45,19 @@ Route::middleware(['auth', 'verified'])->prefix('onboarding')
             ->name('reset');
     });
 
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::resource('restaurants', RestaurantController::class);
-    Route::resource('restaurants.menus', MenuController::class);
-    Route::resource('restaurants.menu-items', UnassignedMenuItemController::class);
-    Route::get('restaurants/{restaurant}/menus/{menu}/menu-items', [MenuItemController::class, 'index'])
-        ->name('restaurants.menus.menu-items.index');
-    Route::post('restaurants/{restaurant}/menus/{menu}/menu-items/{menuItem}/attach', [MenuItemController::class, 'attach'])
-        ->name('restaurants.menus.menu-items.attach');
-    Route::patch('restaurants/{restaurant}/menus/{menu}/menu-items/{menuItem}/settings', [MenuItemController::class, 'updateMenuSettings'])
-        ->name('restaurants.menus.menu-items.settings');
-    Route::delete('restaurants/{restaurant}/menus/{menu}/menu-items/{menuItem}/detach', [MenuItemController::class, 'detach'])
-        ->name('restaurants.menus.menu-items.detach');
-});
+Route::middleware(['auth', 'verified'])
+    ->group(function () {
+        Route::resource('restaurants', RestaurantController::class);
+        Route::resource('restaurants.menus', MenuController::class);
+        Route::resource('restaurants.menu-items', UnassignedMenuItemController::class);
+        Route::get('restaurants/{restaurant}/menus/{menu}/menu-items', [MenuItemController::class, 'index'])
+            ->name('restaurants.menus.menu-items.index');
+        Route::post('restaurants/{restaurant}/menus/{menu}/menu-items/{menuItem}/attach', [MenuItemController::class, 'attach'])
+            ->name('restaurants.menus.menu-items.attach');
+        Route::patch('restaurants/{restaurant}/menus/{menu}/menu-items/{menuItem}/settings', [MenuItemController::class, 'updateMenuSettings'])
+            ->name('restaurants.menus.menu-items.settings');
+        Route::delete('restaurants/{restaurant}/menus/{menu}/menu-items/{menuItem}/detach', [MenuItemController::class, 'detach'])
+            ->name('restaurants.menus.menu-items.detach');
+    });
 
 require __DIR__ . '/auth.php';

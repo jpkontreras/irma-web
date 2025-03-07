@@ -68,8 +68,8 @@ export default function Index({ restaurants }: Props) {
           </Link>
         }
       >
-        <div className="py-12">
-          <div className="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
+        <div className="py-8">
+          <div className="max-w-7xl space-y-6 sm:px-6 lg:px-8">
             <div className="overflow-hidden bg-white shadow-sm dark:bg-gray-800 sm:rounded-lg">
               <div className="p-6">
                 <div className="overflow-x-auto">

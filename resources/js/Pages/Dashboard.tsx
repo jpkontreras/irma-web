@@ -147,14 +147,15 @@ export default function Dashboard() {
       <Head title="Dashboard" />
 
       <div className="py-6">
-        <div className="mx-auto max-w-7xl space-y-8 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl space-y-8 px-4 sm:px-6 lg:px-8">
           {/* Stats Section */}
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            <StatCard title="Today's Orders" value="48" />
-            <StatCard title="Active Tables" value="12" />
-            <StatCard title="Today's Revenue" value="$1,234" />
-          </div>
-
+          {/*
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+              <StatCard title="Today's Orders" value="48" />
+              <StatCard title="Active Tables" value="12" />
+              <StatCard title="Today's Revenue" value="$1,234" />
+            </div>
+          */}
           {/* Primary Actions Grid */}
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             <PrimaryCard

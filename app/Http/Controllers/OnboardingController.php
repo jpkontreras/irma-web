@@ -27,15 +27,12 @@ class OnboardingController extends Controller
       ->first();
 
     if (!$organization) {
-      // Create new organization only if user doesn't have one
+      // Option 1: Use create() with withPivot data
       $organization = $request->user()->organizations()->create([
-        'name' => $request->user()->name . "'s Organization",
-        'slug' => Str::slug($request->user()->name . "'s Organization"),
+        'name' => $request->user()->name,
+        'slug' => Str::slug($request->user()->name),
         'is_active' => true,
-      ]);
-
-      // Attach the user as owner through the pivot table
-      $organization->users()->attach($request->user()->id, ['role' => 'owner']);
+      ], ['role' => 'owner']); // Pass pivot data as second argument
     }
 
     // Update or create onboarding data
@@ -92,15 +89,11 @@ class OnboardingController extends Controller
       ->first();
 
     if (!$organization) {
-      // Create new organization if user doesn't have one
       $organization = $request->user()->organizations()->create([
-        'name' => $request->user()->name . "'s Organization",
-        'slug' => Str::slug($request->user()->name . "'s Organization"),
+        'name' => $request->user()->name,
+        'slug' => Str::slug($request->user()->name),
         'is_active' => true,
-      ]);
-
-      // Attach the user as owner
-      $organization->users()->attach($request->user()->id, ['role' => 'owner']);
+      ], ['role' => 'owner']);
     }
 
     // Update or create onboarding data with skipped status
@@ -120,15 +113,11 @@ class OnboardingController extends Controller
       ->first();
 
     if (!$organization) {
-      // Create new organization if user doesn't have one
       $organization = request()->user()->organizations()->create([
         'name' => request()->user()->name . "'s Organization",
         'slug' => Str::slug(request()->user()->name . "'s Organization"),
         'is_active' => true,
-      ]);
-
-      // Attach the user as owner
-      $organization->users()->attach(request()->user()->id, ['role' => 'owner']);
+      ], ['role' => 'owner']);
     }
 
     switch ($step) {
